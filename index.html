@@ -93,9 +93,9 @@ text-shadow:0 0 30px #ff4fd8;
 
 <h1>Abisso</h1>
 
-<p>Dark Romance Manga Platform</p>
+<p Manga Platform</p>
 
-<button>Czytaj teraz</button>
+<button>czytaj</button>
 
 </header>
 
@@ -104,7 +104,7 @@ text-shadow:0 0 30px #ff4fd8;
 <h2>🔥 Popularne teraz</h2>
 
 <div class="manga-card">
-<h3>Twoja przyszła manga</h3>
+<h3>przyszła manga</h3>
 <p>0 wyświetleń • ❤️ 0</p>
 <p>Ranga: S</p>
 </div>
@@ -113,3 +113,146 @@ text-shadow:0 0 30px #ff4fd8;
 
 </body>
   </html>
+<!DOCTYPE html>
+<html lang="pl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Abisso - Biblioteka Mang</title>
+    <style>
+        :root {
+            --bg: #0a0a0a;
+            --card: #1a1a1a;
+            --accent: #ff3366;
+        }
+        body {
+            margin: 0;
+            font-family: 'Segoe UI', sans-serif;
+            background: var(--bg);
+            color: #eee;
+        }
+        header {
+            background: linear-gradient(135deg, #1f1f1f, #2a2a2a);
+            padding: 1.5rem;
+            text-align: center;
+            border-bottom: 4px solid var(--accent);
+        }
+        h1 { margin: 0; color: var(--accent); }
+        .container { max-width: 1200px; margin: 20px auto; padding: 0 15px; }
+        .search {
+            width: 100%;
+            padding: 15px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 12px;
+            background: #222;
+            color: white;
+            margin-bottom: 25px;
+        }
+        .manga-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+            gap: 20px;
+        }
+        .manga-card {
+            background: var(--card);
+            border-radius: 12px;
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+        .manga-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 15px 30px rgba(255, 51, 102, 0.3);
+        }
+        .manga-card img {
+            width: 100%;
+            height: 240px;
+            object-fit: cover;
+        }
+        .manga-info {
+            padding: 12px;
+            text-align: center;
+        }
+        .manga-title {
+            margin: 8px 0 4px;
+            font-size: 1.05rem;
+        }
+        .add-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: var(--accent);
+            color: white;
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            font-size: 2rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Abisso</h1>
+        <p>Twoja biblioteka mang</p>
+    </header>
+
+    <div class="container">
+        <input type="text" class="search" id="search" placeholder="🔍 Wyszukaj mangę...">
+
+        <div class="manga-grid" id="mangaGrid">
+            <!-- Manga będą dodawane przez JS -->
+        </div>
+    </div>
+
+    <a href="https://github.com/abisso-up/abisso-up/new/main/mangas.json" target="_blank" class="add-btn">+</a>
+
+    <script>
+        // Ładowanie mang z pliku JSON
+        async function loadMangas() {
+            try {
+                const res = await fetch('mangas.json');
+                const mangas = await res.json();
+
+                const grid = document.getElementById('mangaGrid');
+                grid.innerHTML = '';
+
+                mangas.forEach(manga => {
+                    const card = document.createElement('div');
+                    card.className = 'manga-card';
+                    card.innerHTML = `
+                        <a href="reader.html?manga=${manga.id}">
+                            <img src="covers/\( {manga.cover}" alt=" \){manga.title}">
+                            <div class="manga-info">
+                                <div class="manga-title">${manga.title}</div>
+                                <small>${manga.chapters} rozdziałów</small>
+                            </div>
+                        </a>
+                    `;
+                    grid.appendChild(card);
+                });
+            } catch (e) {
+                document.getElementById('mangaGrid').innerHTML = `
+                    <p style="grid-column:1/-1; text-align:center; color:#888;">
+                        Brak pliku mangas.json<br>
+                        Stwórz go według instrukcji poniżej.
+                    </p>`;
+            }
+        }
+
+        // Wyszukiwarka
+        document.getElementById('search').addEventListener('keyup', function() {
+            const term = this.value.toLowerCase();
+            document.querySelectorAll('.manga-card').forEach(card => {
+                const title = card.textContent.toLowerCase();
+                card.style.display = title.includes(term) ? '' : 'none';
+            });
+        });
+
+        loadMangas();
+    </script>
+</body>
+</html>
